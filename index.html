@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VS Quoting Tool — Value Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,600;1,9..144,700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #000831;
+    --vanilla: #FFF7E6;
+    --vanilla-dim: #BCB8A8;
+    --dim-warm: #807A6F;
+    --blue: #3D7AFF;
+    --red: #FF2E00;
+    --hair: rgba(255, 247, 230, 0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--navy);
+    color: var(--vanilla);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    padding: 24px 28px 28px;
+    background-image:
+      linear-gradient(rgba(61, 122, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(61, 122, 255, 0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+  }
+  .container { max-width: 1080px; margin: 0 auto; }
+
+  /* Header */
+  .header { margin-bottom: 22px; }
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .vs-icon {
+    width: 26px;
+    height: 30px;
+    color: var(--vanilla);
+    flex-shrink: 0;
+  }
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(20px, 2.6vw, 26px);
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+  }
+  h1 .dim { color: var(--dim-warm); }
+  .sub {
+    color: var(--vanilla-dim);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  /* Two columns */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+  }
+  @media (max-width: 880px) { .grid { grid-template-columns: 1fr; gap: 36px; } }
+
+  /* Section heads */
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--vanilla-dim);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    margin-bottom: 32px;
+  }
+
+  /* Input field */
+  .field {
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .field .info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field label {
+    font-size: 13px;
+    color: var(--vanilla);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .field .label-aside {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--vanilla-dim);
+    font-weight: 400;
+    letter-spacing: 0;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+  .field .hint {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--vanilla-dim);
+    line-height: 1.5;
+  }
+  .field .input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(61, 122, 255, 0.08);
+    border: 1px solid rgba(61, 122, 255, 0.35);
+    border-radius: 6px;
+    padding: 6px 12px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .field .input-wrap:hover {
+    border-color: rgba(61, 122, 255, 0.6);
+    background: rgba(61, 122, 255, 0.12);
+  }
+  .field .input-wrap:focus-within {
+    border-color: var(--blue);
+    background: rgba(61, 122, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(61, 122, 255, 0.14), 0 0 24px rgba(61, 122, 255, 0.22);
+  }
+  .field .unit-pre, .field .unit-post {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--vanilla-dim);
+  }
+  .field input[type="number"] {
+    width: 80px;
+    background: transparent;
+    border: none;
+    padding: 2px 0;
+    color: var(--blue);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: right;
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .field input[type="number"]::-webkit-outer-spin-button,
+  .field input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .field input[type="number"]:focus {
+    outline: none;
+    color: var(--vanilla);
+  }
+  .field input[type="number"]::placeholder {
+    color: var(--dim-warm);
+    opacity: 0.55;
+    font-weight: 500;
+  }
+
+  /* Empty / placeholder state for outputs — labels only, no numbers */
+  .output-block.is-empty .big,
+  .total-block.is-empty .big {
+    text-shadow: none;
+    min-height: clamp(46px, 6vw, 64px);
+  }
+  .output-block.is-empty .sub,
+  .total-block.is-empty .sub,
+  .output-block.is-empty .perline-mini {
+    visibility: hidden;
+  }
+
+  /* Edit cue strip */
+  .edit-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    margin-bottom: 24px;
+    background: rgba(61, 122, 255, 0.08);
+    border: 1px solid rgba(61, 122, 255, 0.3);
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--blue);
+    letter-spacing: 0.4px;
+  }
+  .edit-banner .arrow { font-weight: 700; }
+
+  /* Locked / read-only fields */
+  .field.locked .input-wrap {
+    background: transparent;
+    border: 1px dashed rgba(255, 247, 230, 0.18);
+    pointer-events: none;
+  }
+  .field.locked .input-wrap:hover,
+  .field.locked .input-wrap:focus-within {
+    background: transparent;
+    border-color: rgba(255, 247, 230, 0.18);
+    box-shadow: none;
+  }
+  .field.locked input[type="number"] {
+    color: var(--vanilla);
+  }
+
+  /* Advanced */
+  .advanced {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--hair);
+  }
+  .advanced summary {
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--vanilla-dim);
+    letter-spacing: 0.6px;
+    margin-bottom: 14px;
+    user-select: none;
+    list-style: none;
+  }
+  .advanced summary::-webkit-details-marker { display: none; }
+  .advanced summary:hover { color: var(--vanilla); }
+
+  /* Right side */
+  .hero {
+    margin-bottom: 40px;
+  }
+  .hero .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--vanilla-dim);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .hero .big {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--red);
+    font-size: clamp(56px, 8vw, 92px);
+    line-height: 0.95;
+    letter-spacing: -2px;
+  }
+  .hero .ratio {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    color: var(--vanilla);
+    font-size: 15px;
+    margin-top: 16px;
+  }
+
+  .keys {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .keys .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--vanilla-dim);
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+  }
+  .keys .val {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--vanilla);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .keys .sub-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--vanilla-dim);
+  }
+
+  /* Per-line band — smaller, more compact */
+  .perline {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .perline .head {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--blue);
+    letter-spacing: 0.6px;
+  }
+  .perline .col-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--vanilla-dim);
+    letter-spacing: 0.4px;
+    margin-bottom: 4px;
+  }
+  .perline .col-val {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--vanilla);
+    line-height: 1;
+  }
+  .perline .vs-col .col-val { color: var(--blue); }
+
+  .tier {
+    margin-bottom: 14px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    align-items: baseline;
+  }
+  .tier .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--blue);
+    letter-spacing: 1px;
+  }
+  .tier .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--vanilla);
+  }
+  .tier .desc {
+    font-size: 11px;
+    color: var(--vanilla-dim);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+  .tier .right { display: flex; flex-direction: column; }
+
+  .details {
+    border-top: 1px dashed var(--hair);
+    padding-top: 12px;
+  }
+  .details summary {
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--vanilla-dim);
+    letter-spacing: 0.6px;
+    margin-bottom: 10px;
+    user-select: none;
+    list-style: none;
+  }
+  .details summary::-webkit-details-marker { display: none; }
+  .details summary:hover { color: var(--vanilla); }
+  .details-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+  .details-row .label {
+    color: var(--vanilla-dim);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+  .details-row .value {
+    color: var(--vanilla);
+    font-weight: 600;
+  }
+
+  /* Side-by-side blocks row */
+  .blocks-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 18px;
+    align-items: start;
+  }
+  @media (max-width: 880px) {
+    .blocks-row {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+  }
+  .blocks-row .block {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+  .outputs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 880px) {
+    .outputs-row { grid-template-columns: 1fr; gap: 22px; }
+  }
+
+  /* Block sections */
+  .block {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+  .block-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .block-head .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--blue);
+    font-weight: 700;
+    letter-spacing: 0.6px;
+  }
+  .block-head .num::before {
+    content: '// ';
+    opacity: 0.55;
+  }
+  .block-head .title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.2px;
+    color: var(--vanilla);
+  }
+  .block-head .title .dim {
+    color: var(--dim-warm);
+    font-weight: 500;
+  }
+
+  /* Big output block — futuristic card */
+  .output-block {
+    background: linear-gradient(180deg, rgba(61, 122, 255, 0.07), rgba(61, 122, 255, 0.02));
+    border: 1px solid rgba(61, 122, 255, 0.28);
+    border-radius: 8px;
+    padding: 24px 26px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(61, 122, 255, 0.06), inset 0 1px 0 rgba(255, 247, 230, 0.04);
+  }
+  .output-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue) 30%, var(--blue) 70%, transparent);
+    opacity: 0.7;
+  }
+  .output-block::after {
+    content: '';
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 8px; height: 8px;
+    border-top: 1px solid rgba(61, 122, 255, 0.6);
+    border-right: 1px solid rgba(61, 122, 255, 0.6);
+  }
+  .output-block .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--blue);
+    letter-spacing: 1.4px;
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .output-block .label::before {
+    content: '// ';
+    opacity: 0.55;
+  }
+  .output-block .big {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--red);
+    font-size: clamp(46px, 6vw, 64px);
+    line-height: 0.95;
+    letter-spacing: -1.4px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 32px rgba(255, 46, 0, 0.28);
+  }
+  .output-block .sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--vanilla-dim);
+    line-height: 1.55;
+    margin-top: 10px;
+  }
+  .output-block .perline-mini {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(61, 122, 255, 0.2);
+  }
+  .output-block .perline-mini .col-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    color: var(--vanilla-dim);
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+  .output-block .perline-mini .col-val {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--vanilla);
+    line-height: 1;
+  }
+  .output-block .perline-mini .vs-col .col-val { color: var(--blue); }
+
+  /* Final total — value vs price side by side */
+  .total-block {
+    background: var(--vanilla);
+    color: var(--navy);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 14px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 0.9fr;
+    gap: 0;
+    align-items: stretch;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(255, 247, 230, 0.06);
+  }
+  .total-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue) 0%, var(--red) 50%, var(--blue) 100%);
+  }
+  @media (max-width: 880px) {
+    .total-block {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 18px 22px;
+    }
+  }
+  .total-block .cell {
+    padding: 0 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .total-block .cell:first-child { padding-left: 0; }
+  .total-block .cell:last-child { padding-right: 0; }
+  .total-block .cell + .cell {
+    border-left: 1px solid rgba(0, 8, 49, 0.15);
+  }
+  @media (max-width: 880px) {
+    .total-block .cell { padding: 12px 0 0; }
+    .total-block .cell:first-child { padding-top: 0; }
+    .total-block .cell + .cell {
+      border-left: none;
+      border-top: 1px solid rgba(0, 8, 49, 0.15);
+      padding-top: 12px;
+    }
+  }
+  .total-block .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 0.9px;
+    margin-bottom: 6px;
+  }
+  .total-block .big {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(40px, 5.2vw, 56px);
+    line-height: 0.95;
+    letter-spacing: -1.3px;
+  }
+  .total-block .value-cell .big {
+    color: var(--red);
+    text-shadow: 0 0 28px rgba(255, 46, 0, 0.18);
+  }
+  .total-block .price-cell .big,
+  .total-block .ratio-cell .big {
+    color: var(--navy);
+    font-size: clamp(30px, 4vw, 42px);
+    letter-spacing: -0.9px;
+  }
+  .total-block .label::before {
+    content: '// ';
+    color: var(--blue);
+    opacity: 0.55;
+  }
+  .total-block .sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #555;
+    line-height: 1.45;
+    margin-top: 7px;
+    letter-spacing: 0.2px;
+  }
+  .total-block .sub strong { color: var(--navy); font-weight: 700; }
+
+  /* Print */
+  @media print {
+    body { background: white; color: black; padding: 24px; }
+    h1, .hero .ratio, .keys .val, .tier .name, .details-row .value, .field input { color: black; }
+    .tag, .section-title, .advanced summary, .details summary, .hint, .label, .sub-label, .sub, .unit-pre, .unit-post {
+      color: #666;
+    }
+    .hero .big { color: var(--red); }
+    .field { border-color: #ddd; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="brand-row">
+      <svg class="vs-icon" viewBox="0 0 178.1 200" xmlns="http://www.w3.org/2000/svg" aria-label="Vanilla Steel">
+        <path fill="currentColor" d="M168.3,42.8L98.8,2.6C95.8,0.9,92.4,0,89,0c-3.4,0-6.8,0.9-9.8,2.6L9.7,42.8c-6,3.5-9.7,10-9.7,16.9v80.5c0,6.9,3.7,13.4,9.7,16.9l69.5,40.2c3,1.7,6.4,2.6,9.8,2.6s6.8-0.9,9.8-2.6l69.5-40.2c6-3.5,9.7-10,9.7-16.9V59.7C178.1,52.8,174.4,46.3,168.3,42.8z M84.8,12.1c1.3-0.8,2.8-1.1,4.3-1.1c1.5,0,3,0.4,4.3,1.1l64.3,37.2c3.1,1.8,4.8,3.3,5.2,4.7c0.4,1.6-0.4,4.3-2.4,7.8l0,0l-38.6,66.8c-1.2,2.1-3.3,3.4-5.6,3.4c-2.1,0-3.9-1.2-5-3.2l-53-91.7c-1.7-3.1-2.3-5.4-1.9-6.9c0.4-1.4,2.1-2.9,5.2-4.7L84.8,12.1z M91.4,181.4c-1.1,1.8-3.7,1.8-4.8,0L17.5,62c-2-3.5-2.9-6.2-2.4-7.8c0.4-1.4,2.1-2.9,5.2-4.7l24.3-14.1l57.1,98.8c2.6,4.7,6.9,7.9,12,8.7L91.4,181.4z M11,140.3V72.6l63.1,109.1l-58.8-34.1C12.6,146.1,11,143.3,11,140.3z M162.8,147.6l-59,34.1l63.2-109.6v68.1C167.1,143.3,165.5,146.1,162.8,147.6z"/>
+      </svg>
+      <div class="tag">// VALUE CALCULATOR</div>
+    </div>
+    <h1><span class="dim">How much value would the VS Quoting Tool generate for your team?</span></h1>
+  </div>
+
+  <div class="blocks-row">
+
+  <!-- BLOCK 1: COST SAVED — head + inputs -->
+  <div class="block">
+    <div class="block-head">
+      <span class="num">01</span>
+      <span class="title">Cost saved <span class="dim">— time reclaimed from manual quoting</span></span>
+    </div>
+
+    <div class="field">
+      <div class="info">
+        <label for="reps">Sales reps</label>
+      </div>
+      <div class="input-wrap">
+        <input type="number" id="reps" min="1" max="9999" placeholder="—" step="1">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="info">
+        <label for="rfqsPerDay">RFQs per rep per day</label>
+      </div>
+      <div class="input-wrap">
+        <input type="number" id="rfqsPerDay" min="1" max="9999" placeholder="—" step="1">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="info">
+        <label for="linesPerRfq">Lines per RFQ</label>
+      </div>
+      <div class="input-wrap">
+        <input type="number" id="linesPerRfq" min="1" max="9999" placeholder="—" step="1">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="info">
+        <label for="minutesPerLine">Minutes per line <span class="label-aside">(read · check stocks · price · send · aggregate)</span></label>
+      </div>
+      <div class="input-wrap">
+        <input type="number" id="minutesPerLine" min="0.1" max="60" placeholder="—" step="0.1"><span class="unit-post">min</span>
+      </div>
+    </div>
+
+    <details class="advanced">
+      <summary>▼ ADVANCED — REP COST, WORKING DAYS</summary>
+
+      <div class="field">
+        <div class="info">
+          <label for="repCost">Sales rep cost</label>
+          <div class="hint">fully-loaded: base + commission + benefits ÷ working hours</div>
+        </div>
+        <div class="input-wrap">
+          <span class="unit-pre">€</span><input type="number" id="repCost" min="20" max="500" value="60" step="5"><span class="unit-post">/h</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="info">
+          <label for="workingDays">Working days per year</label>
+        </div>
+        <div class="input-wrap">
+          <input type="number" id="workingDays" min="180" max="260" value="220" step="1">
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- BLOCK 2: REVENUE UPLIFT — head + inputs -->
+  <div class="block">
+    <div class="block-head">
+      <span class="num">02</span>
+      <span class="title">Revenue uplift <span class="dim">— win more of the same RFQs</span></span>
+    </div>
+
+    <div class="field">
+      <div class="info">
+        <label for="avgRfqValue">Average value per RFQ</label>
+      </div>
+      <div class="input-wrap">
+        <span class="unit-pre">€</span><input type="number" id="avgRfqValue" min="100" max="10000000" placeholder="—" step="500">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="info">
+        <label for="currentWinRate">Current win rate <span class="label-aside">(steel distribution: typically 15–25%)</span></label>
+      </div>
+      <div class="input-wrap">
+        <input type="number" id="currentWinRate" min="1" max="100" placeholder="—" step="0.5"><span class="unit-post">%</span>
+      </div>
+    </div>
+
+    <div class="field locked">
+      <div class="info">
+        <label for="vsWinRate">Win rate with VS</label>
+      </div>
+      <div class="input-wrap">
+        <input type="number" id="vsWinRate" readonly tabindex="-1" placeholder="—"><span class="unit-post">%</span>
+      </div>
+    </div>
+
+    <details class="advanced">
+      <summary>▼ ADVANCED — GROSS MARGIN</summary>
+
+      <div class="field">
+        <div class="info">
+          <label for="industryMargin">Gross margin</label>
+          <div class="hint">non-stockholding traders 3–8% · stockholders / SSCs 17–21% (Klöckner 17–19%, Russel Metals 21%, FY 2024 filings)</div>
+        </div>
+        <div class="input-wrap">
+          <input type="number" id="industryMargin" min="1" max="50" value="8" step="0.5"><span class="unit-post">%</span>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  </div><!-- /blocks-row -->
+
+  <!-- OUTPUTS ROW -->
+  <div class="outputs-row">
+    <div class="output-block cost-card">
+      <div class="label">ANNUAL COST SAVED</div>
+      <div class="big" id="costSaved">—</div>
+      <div class="sub">manual quoting cost minus VS price · profit, not revenue</div>
+
+      <div class="perline-mini">
+        <div>
+          <div class="col-label">YOUR COST / LINE TODAY</div>
+          <div class="col-val" id="manualPerLineKey">—</div>
+        </div>
+        <div class="vs-col">
+          <div class="col-label">WITH VS / LINE</div>
+          <div class="col-val" id="vsPerLineKey">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="output-block revenue-card">
+      <div class="label">ANNUAL PROFIT FROM EXTRA WINS</div>
+      <div class="big" id="profitFromUplift">—</div>
+      <div class="sub">
+        <span id="winRateShown">20% → 21%</span> win rate · <span id="extraWinsShown">—</span> extra wins × avg RFQ value = <span id="revenueUplift">—</span> extra revenue<br>
+        × <span id="industryMarginShown">8</span>% gross margin = profit shown above
+      </div>
+
+      <div class="perline-mini">
+        <div>
+          <div class="col-label">WINS / YEAR TODAY</div>
+          <div class="col-val" id="winsTodayShown">—</div>
+        </div>
+        <div class="vs-col">
+          <div class="col-label">WINS / YEAR WITH VS</div>
+          <div class="col-val" id="winsWithVsShown">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOTAL + PRICE + RATIO side by side -->
+  <div class="total-block">
+    <div class="cell value-cell">
+      <div class="label">TOTAL ANNUAL VALUE</div>
+      <div class="big" id="totalValue">—</div>
+      <div class="sub"><span id="costSavedMini">—</span> cost saved &nbsp;+&nbsp; <span id="profitFromUpliftMini">—</span> profit from extra wins</div>
+    </div>
+
+    <div class="cell price-cell">
+      <div class="label">VS ANNUAL PRICE</div>
+      <div class="big" id="vsAnnualPrice">—</div>
+      <div class="sub"><strong id="tierName">—</strong> · <span id="tierDesc">—</span></div>
+    </div>
+
+    <div class="cell ratio-cell">
+      <div class="label">RETURN ON PRICE</div>
+      <div class="big" id="ratio">—</div>
+      <div class="sub">€ of value per € paid</div>
+    </div>
+  </div>
+
+  <details class="details">
+    <summary>▼ SHOW THE MATH</summary>
+    <div class="details-row">
+      <div class="label">Annual RFQs</div>
+      <div class="value" id="totalRfqs">—</div>
+    </div>
+    <div class="details-row">
+      <div class="label">Annual RFQ lines</div>
+      <div class="value" id="totalLines">—</div>
+    </div>
+    <div class="details-row">
+      <div class="label">Manual cost (today)</div>
+      <div class="value" id="manualCost">—</div>
+    </div>
+    <div class="details-row">
+      <div class="label">VS price (per year)</div>
+      <div class="value" id="vsCost">—</div>
+    </div>
+    <div class="details-row">
+      <div class="label">Manual / line</div>
+      <div class="value" id="manualPerLine">—</div>
+    </div>
+    <div class="details-row">
+      <div class="label">VS / line</div>
+      <div class="value" id="vsPerLine">—</div>
+    </div>
+  </details>
+
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const VS_WIN_RATE_LIFT_REL = 0.05;
+  const VS_PRICE_PER_LINE = 0.30;
+  const inputs = ['reps','rfqsPerDay','linesPerRfq','minutesPerLine','avgRfqValue','currentWinRate','repCost','workingDays','industryMargin'];
+  inputs.forEach(id => $(id).addEventListener('input', calc));
+
+  function fmt(n) {
+    if (n >= 1_000_000) return '€' + (n/1_000_000).toFixed(2) + 'M';
+    if (n >= 1_000) return '€' + Math.round(n/1_000).toLocaleString() + 'k';
+    return '€' + Math.round(n).toLocaleString();
+  }
+  function fmtNum(n) {
+    if (n >= 1_000_000) return (n/1_000_000).toFixed(2) + 'M';
+    if (n >= 1_000) return (n/1_000).toFixed(0) + 'k';
+    return Math.round(n).toLocaleString();
+  }
+  function fmtPerLine(n) {
+    return '€' + n.toFixed(2);
+  }
+
+  const COST_OUTPUT_IDS = ['costSaved','costSavedMini','manualPerLineKey','vsPerLineKey','totalRfqs','totalLines','manualCost','vsCost','manualPerLine','vsPerLine','tierName','tierDesc','vsAnnualPrice'];
+  const REVENUE_OUTPUT_IDS = ['revenueUplift','profitFromUplift','profitFromUpliftMini','winsTodayShown','winsWithVsShown','extraWinsShown','winRateShown','industryMarginShown'];
+
+  function clearIds(ids) {
+    ids.forEach(id => { const el = $(id); if (el) el.textContent = ''; });
+  }
+
+  function calc() {
+    const reps = +$('reps').value || 0;
+    const rfqsPerDay = +$('rfqsPerDay').value || 0;
+    const linesPerRfq = +$('linesPerRfq').value || 0;
+    const minutesPerLine = +$('minutesPerLine').value || 0;
+    const avgRfqValue = +$('avgRfqValue').value || 0;
+    const currentWinRate = +$('currentWinRate').value || 0;
+
+    const costFilled = reps > 0 && rfqsPerDay > 0 && linesPerRfq > 0 && minutesPerLine > 0;
+    const revenueFilled = costFilled && avgRfqValue > 0 && currentWinRate > 0;
+
+    const costCard = document.querySelector('.cost-card');
+    const revenueCard = document.querySelector('.revenue-card');
+    const totalBlock = document.querySelector('.total-block');
+
+    if (!costFilled) {
+      clearIds(COST_OUTPUT_IDS);
+      clearIds(REVENUE_OUTPUT_IDS);
+      $('totalValue').textContent = '';
+      $('ratio').textContent = '';
+      $('vsWinRate').value = '';
+      costCard.classList.add('is-empty');
+      revenueCard.classList.add('is-empty');
+      totalBlock.classList.add('is-empty');
+      return;
+    }
+
+    const vsWinRate = revenueFilled ? +(currentWinRate * (1 + VS_WIN_RATE_LIFT_REL)).toFixed(1) : 0;
+    $('vsWinRate').value = revenueFilled ? vsWinRate : '';
+    const repCost = +$('repCost').value || 0;
+    const workingDays = +$('workingDays').value || 0;
+    const vsPricePerLine = VS_PRICE_PER_LINE;
+    const industryMargin = +$('industryMargin').value || 0;
+
+    const totalRfqs = reps * rfqsPerDay * workingDays;
+    const linesPerYear = totalRfqs * linesPerRfq;
+
+    const manualPerLine = minutesPerLine * (repCost / 60);
+    const manualTotal = linesPerYear * manualPerLine;
+
+    let tierName, tierPrice, tierDesc;
+    if (linesPerYear <= 50_000) {
+      tierName = 'STARTER';
+      tierPrice = 15000;
+      tierDesc = 'up to 50k RFQ lines / year';
+    } else if (linesPerYear <= 150_000) {
+      tierName = 'GROWTH';
+      tierPrice = 45000;
+      tierDesc = 'up to 150k RFQ lines / year';
+    } else if (linesPerYear <= 300_000) {
+      tierName = 'ENTERPRISE';
+      tierPrice = 90000;
+      tierDesc = 'up to 300k RFQ lines / year';
+    } else {
+      tierName = 'ENTERPRISE+';
+      tierPrice = 90000;
+      tierDesc = 'above 300k RFQ lines — custom quote';
+    }
+
+    const vsTotal = tierPrice;
+    const costSaved = Math.max(0, manualTotal - vsTotal);
+
+    // Cost-side outputs (populate now since costFilled)
+    costCard.classList.remove('is-empty');
+    totalBlock.classList.remove('is-empty');
+    $('costSaved').textContent = fmt(costSaved);
+    $('costSavedMini').textContent = fmt(costSaved);
+    $('vsAnnualPrice').textContent = fmt(vsTotal);
+    $('tierName').textContent = tierName;
+    $('tierDesc').textContent = tierDesc;
+    $('totalRfqs').textContent = fmtNum(totalRfqs);
+    $('totalLines').textContent = fmtNum(linesPerYear);
+    $('manualCost').textContent = fmt(manualTotal);
+    $('vsCost').textContent = fmt(vsTotal);
+    $('manualPerLine').textContent = fmtPerLine(manualPerLine);
+    $('vsPerLine').textContent = fmtPerLine(vsPricePerLine);
+    $('manualPerLineKey').textContent = fmtPerLine(manualPerLine);
+    $('vsPerLineKey').textContent = fmtPerLine(vsPricePerLine);
+
+    // Revenue-side outputs (only if revenueFilled)
+    let profitFromUplift = 0;
+    if (revenueFilled) {
+      const winsToday = totalRfqs * currentWinRate / 100;
+      const winsWithVs = totalRfqs * vsWinRate / 100;
+      const extraWins = Math.max(0, winsWithVs - winsToday);
+      const revenueUplift = extraWins * avgRfqValue;
+      profitFromUplift = revenueUplift * (industryMargin / 100);
+
+      revenueCard.classList.remove('is-empty');
+      $('revenueUplift').textContent = fmt(revenueUplift);
+      $('profitFromUplift').textContent = fmt(profitFromUplift);
+      $('profitFromUpliftMini').textContent = fmt(profitFromUplift);
+      $('winRateShown').textContent = currentWinRate + '% → ' + vsWinRate + '%';
+      $('extraWinsShown').textContent = fmtNum(Math.round(extraWins));
+      $('winsTodayShown').textContent = fmtNum(Math.round(winsToday));
+      $('winsWithVsShown').textContent = fmtNum(Math.round(winsWithVs));
+      $('industryMarginShown').textContent = industryMargin;
+    } else {
+      revenueCard.classList.add('is-empty');
+      clearIds(REVENUE_OUTPUT_IDS);
+    }
+
+    const totalValue = costSaved + profitFromUplift;
+    const ratio = vsTotal > 0 ? (totalValue / vsTotal) : 0;
+    $('totalValue').textContent = fmt(totalValue);
+    $('ratio').textContent = ratio > 0 ? ratio.toFixed(1) + '×' : '—';
+  }
+
+  calc();
+</script>
+</body>
+</html>
