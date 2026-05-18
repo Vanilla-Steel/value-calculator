@@ -671,33 +671,24 @@
 
     <div class="field">
       <div class="info">
-        <label for="rfqsPerDay">RFQs per rep per day</label>
+        <label for="hoursPerDay">Hours per rep per day on RFQs</label>
       </div>
       <div class="input-wrap">
-        <input type="number" id="rfqsPerDay" min="1" max="9999" placeholder="—" step="1">
+        <input type="number" id="hoursPerDay" min="0.1" max="24" placeholder="—" step="0.1"><span class="unit-post">h</span>
       </div>
     </div>
 
     <div class="field">
       <div class="info">
-        <label for="linesPerRfq">Lines per RFQ</label>
+        <label for="linesPerDay">Line items per rep per day</label>
       </div>
       <div class="input-wrap">
-        <input type="number" id="linesPerRfq" min="1" max="9999" placeholder="—" step="1">
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="info">
-        <label for="minutesPerLine">Minutes per line <span class="label-aside">(read · check stocks · price · send · aggregate)</span></label>
-      </div>
-      <div class="input-wrap">
-        <input type="number" id="minutesPerLine" min="0.1" max="60" placeholder="—" step="0.1"><span class="unit-post">min</span>
+        <input type="number" id="linesPerDay" min="1" max="100000" placeholder="—" step="1">
       </div>
     </div>
 
     <details class="advanced">
-      <summary>▼ ADVANCED — REP COST, WORKING DAYS</summary>
+      <summary>▼ ADVANCED — REP COST, WORKING DAYS, LINES / RFQ</summary>
 
       <div class="field">
         <div class="info">
@@ -715,6 +706,16 @@
         </div>
         <div class="input-wrap">
           <input type="number" id="workingDays" min="180" max="260" value="220" step="1">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="info">
+          <label for="linesPerRfq">Average lines per RFQ</label>
+          <div class="hint">used to derive RFQ count from line volume</div>
+        </div>
+        <div class="input-wrap">
+          <input type="number" id="linesPerRfq" min="1" max="9999" value="5" step="1">
         </div>
       </div>
     </details>
@@ -866,7 +867,7 @@
   const $ = (id) => document.getElementById(id);
   const VS_WIN_RATE_LIFT_REL = 0.05;
   const VS_PRICE_PER_LINE = 0.30;
-  const inputs = ['reps','rfqsPerDay','linesPerRfq','minutesPerLine','avgRfqValue','currentWinRate','repCost','workingDays','industryMargin'];
+  const inputs = ['reps','hoursPerDay','linesPerDay','avgRfqValue','currentWinRate','repCost','workingDays','linesPerRfq','industryMargin'];
   inputs.forEach(id => $(id).addEventListener('input', calc));
 
   function fmt(n) {
@@ -892,13 +893,12 @@
 
   function calc() {
     const reps = +$('reps').value || 0;
-    const rfqsPerDay = +$('rfqsPerDay').value || 0;
-    const linesPerRfq = +$('linesPerRfq').value || 0;
-    const minutesPerLine = +$('minutesPerLine').value || 0;
+    const hoursPerDay = +$('hoursPerDay').value || 0;
+    const linesPerDay = +$('linesPerDay').value || 0;
     const avgRfqValue = +$('avgRfqValue').value || 0;
     const currentWinRate = +$('currentWinRate').value || 0;
 
-    const costFilled = reps > 0 && rfqsPerDay > 0 && linesPerRfq > 0 && minutesPerLine > 0;
+    const costFilled = reps > 0 && hoursPerDay > 0 && linesPerDay > 0;
     const revenueFilled = costFilled && avgRfqValue > 0 && currentWinRate > 0;
 
     const costCard = document.querySelector('.cost-card');
@@ -921,14 +921,16 @@
     $('vsWinRate').value = revenueFilled ? vsWinRate : '';
     const repCost = +$('repCost').value || 0;
     const workingDays = +$('workingDays').value || 0;
+    const linesPerRfq = +$('linesPerRfq').value || 5;
     const vsPricePerLine = VS_PRICE_PER_LINE;
     const industryMargin = +$('industryMargin').value || 0;
 
-    const totalRfqs = reps * rfqsPerDay * workingDays;
-    const linesPerYear = totalRfqs * linesPerRfq;
+    const linesPerYear = reps * linesPerDay * workingDays;
+    const totalRfqs = linesPerRfq > 0 ? linesPerYear / linesPerRfq : 0;
 
-    const manualPerLine = minutesPerLine * (repCost / 60);
-    const manualTotal = linesPerYear * manualPerLine;
+    const manualHoursPerYear = reps * hoursPerDay * workingDays;
+    const manualTotal = manualHoursPerYear * repCost;
+    const manualPerLine = linesPerYear > 0 ? manualTotal / linesPerYear : 0;
 
     let tierName, tierPrice, tierDesc;
     if (linesPerYear <= 50_000) {
