@@ -412,6 +412,47 @@
     padding-bottom: 0;
     border-bottom: none;
   }
+  .results-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  /* Compact total-block when stacked in right column */
+  .results-col .total-block {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 16px 22px;
+  }
+  .results-col .total-block .cell {
+    padding: 12px 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 8, 49, 0.15);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 18px;
+    justify-content: space-between;
+  }
+  .results-col .total-block .cell:first-child { padding-top: 0; }
+  .results-col .total-block .cell:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .results-col .total-block .label {
+    margin-bottom: 0;
+  }
+  .results-col .total-block .sub {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+  }
+  .results-col .total-block .big {
+    font-size: clamp(28px, 3.2vw, 38px) !important;
+    letter-spacing: -0.8px;
+    text-align: right;
+  }
+  .results-col .total-block .tier-only {
+    font-size: clamp(18px, 2.2vw, 24px) !important;
+  }
   .outputs-row {
     display: grid;
     grid-template-columns: 1fr;
@@ -724,46 +765,48 @@
     </details>
   </div>
 
-    <!-- OUTPUT — alongside inputs -->
-    <div class="output-block cost-card">
-      <div class="label">ANNUAL COST SAVED</div>
-      <div class="big" id="costSaved">—</div>
-      <div class="sub">manual quoting cost minus VS package price</div>
+    <!-- RIGHT COLUMN: output + total stacked -->
+    <div class="results-col">
+      <div class="output-block cost-card">
+        <div class="label">ANNUAL COST SAVED</div>
+        <div class="big" id="costSaved">—</div>
+        <div class="sub">manual quoting cost minus VS package price</div>
 
-      <div class="perline-mini">
-        <div>
-          <div class="col-label">YOUR COST / RFQ LINE TODAY</div>
-          <div class="col-val" id="manualPerLineKey">—</div>
+        <div class="perline-mini">
+          <div>
+            <div class="col-label">YOUR COST / RFQ LINE TODAY</div>
+            <div class="col-val" id="manualPerLineKey">—</div>
+          </div>
+          <div class="vs-col">
+            <div class="col-label">WITH VS / RFQ LINE</div>
+            <div class="col-val" id="vsPerLineKey">—</div>
+          </div>
         </div>
-        <div class="vs-col">
-          <div class="col-label">WITH VS / RFQ LINE</div>
-          <div class="col-val" id="vsPerLineKey">—</div>
+      </div>
+
+      <!-- TOTAL + TIER + RATIO -->
+      <div class="total-block">
+        <div class="cell value-cell">
+          <div class="label">TOTAL ANNUAL VALUE</div>
+          <div class="big" id="totalValue">—</div>
+          <div class="sub">cost saved from automation</div>
+        </div>
+
+        <div class="cell price-cell">
+          <div class="label">SUGGESTED PACKAGE</div>
+          <div class="big tier-only" id="tierName">—</div>
+          <div class="sub" id="tierDesc">—</div>
+        </div>
+
+        <div class="cell ratio-cell">
+          <div class="label">RETURN ON PRICE</div>
+          <div class="big" id="ratio">—</div>
+          <div class="sub">€ of value per € paid</div>
         </div>
       </div>
     </div>
 
   </div><!-- /blocks-row -->
-
-  <!-- TOTAL + TIER + RATIO side by side -->
-  <div class="total-block">
-    <div class="cell value-cell">
-      <div class="label">TOTAL ANNUAL VALUE</div>
-      <div class="big" id="totalValue">—</div>
-      <div class="sub">cost saved from automation</div>
-    </div>
-
-    <div class="cell price-cell">
-      <div class="label">SUGGESTED PACKAGE</div>
-      <div class="big tier-only" id="tierName">—</div>
-      <div class="sub" id="tierDesc">—</div>
-    </div>
-
-    <div class="cell ratio-cell">
-      <div class="label">RETURN ON PRICE</div>
-      <div class="big" id="ratio">—</div>
-      <div class="sub">€ of value per € paid</div>
-    </div>
-  </div>
 
   <details class="details">
     <summary>▼ SHOW THE MATH</summary>
