@@ -414,12 +414,9 @@
   }
   .outputs-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 28px;
     margin-bottom: 20px;
-  }
-  @media (max-width: 880px) {
-    .outputs-row { grid-template-columns: 1fr; gap: 22px; }
   }
 
   /* Block sections */
@@ -611,6 +608,13 @@
     font-size: clamp(30px, 4vw, 42px);
     letter-spacing: -0.9px;
   }
+  .total-block .tier-only {
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-style: normal !important;
+    font-size: clamp(22px, 2.8vw, 30px) !important;
+    letter-spacing: 0.5px !important;
+    font-weight: 700;
+  }
   .total-block .label::before {
     content: '// ';
     color: var(--blue);
@@ -720,109 +724,40 @@
     </details>
   </div>
 
-  <!-- BLOCK 2: REVENUE UPLIFT — head + inputs -->
-  <div class="block">
-    <div class="block-head">
-      <span class="num">02</span>
-      <span class="title">Revenue uplift <span class="dim">— win more of the same RFQs</span></span>
-    </div>
-
-    <div class="field">
-      <div class="info">
-        <label for="avgRfqValue">Average value per RFQ</label>
-      </div>
-      <div class="input-wrap">
-        <span class="unit-pre">€</span><input type="number" id="avgRfqValue" min="100" max="10000000" placeholder="—" step="500">
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="info">
-        <label for="currentWinRate">Current win rate <span class="label-aside">(steel distribution: typically 15–25%)</span></label>
-      </div>
-      <div class="input-wrap">
-        <input type="number" id="currentWinRate" min="1" max="100" placeholder="—" step="0.5"><span class="unit-post">%</span>
-      </div>
-    </div>
-
-    <div class="field locked">
-      <div class="info">
-        <label for="vsWinRate">Win rate with VS</label>
-      </div>
-      <div class="input-wrap">
-        <input type="number" id="vsWinRate" readonly tabindex="-1" placeholder="—"><span class="unit-post">%</span>
-      </div>
-    </div>
-
-    <details class="advanced">
-      <summary>▼ ADVANCED — GROSS MARGIN</summary>
-
-      <div class="field">
-        <div class="info">
-          <label for="industryMargin">Gross margin</label>
-          <div class="hint">non-stockholding traders 3–8% · stockholders / SSCs 17–21% (Klöckner 17–19%, Russel Metals 21%, FY 2024 filings)</div>
-        </div>
-        <div class="input-wrap">
-          <input type="number" id="industryMargin" min="1" max="50" value="8" step="0.5"><span class="unit-post">%</span>
-        </div>
-      </div>
-    </details>
-  </div>
-
   </div><!-- /blocks-row -->
 
-  <!-- OUTPUTS ROW -->
+  <!-- OUTPUT ROW -->
   <div class="outputs-row">
     <div class="output-block cost-card">
       <div class="label">ANNUAL COST SAVED</div>
       <div class="big" id="costSaved">—</div>
-      <div class="sub">manual quoting cost minus VS price · profit, not revenue</div>
+      <div class="sub">manual quoting cost minus VS package price</div>
 
       <div class="perline-mini">
         <div>
-          <div class="col-label">YOUR COST / LINE TODAY</div>
+          <div class="col-label">YOUR COST / RFQ LINE TODAY</div>
           <div class="col-val" id="manualPerLineKey">—</div>
         </div>
         <div class="vs-col">
-          <div class="col-label">WITH VS / LINE</div>
+          <div class="col-label">WITH VS / RFQ LINE</div>
           <div class="col-val" id="vsPerLineKey">—</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="output-block revenue-card">
-      <div class="label">ANNUAL PROFIT FROM EXTRA WINS</div>
-      <div class="big" id="profitFromUplift">—</div>
-      <div class="sub">
-        <span id="winRateShown">20% → 21%</span> win rate · <span id="extraWinsShown">—</span> extra wins × avg RFQ value = <span id="revenueUplift">—</span> extra revenue<br>
-        × <span id="industryMarginShown">8</span>% gross margin = profit shown above
-      </div>
-
-      <div class="perline-mini">
-        <div>
-          <div class="col-label">WINS / YEAR TODAY</div>
-          <div class="col-val" id="winsTodayShown">—</div>
-        </div>
-        <div class="vs-col">
-          <div class="col-label">WINS / YEAR WITH VS</div>
-          <div class="col-val" id="winsWithVsShown">—</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- TOTAL + PRICE + RATIO side by side -->
+  <!-- TOTAL + TIER + RATIO side by side -->
   <div class="total-block">
     <div class="cell value-cell">
       <div class="label">TOTAL ANNUAL VALUE</div>
       <div class="big" id="totalValue">—</div>
-      <div class="sub"><span id="costSavedMini">—</span> cost saved &nbsp;+&nbsp; <span id="profitFromUpliftMini">—</span> profit from extra wins</div>
+      <div class="sub">cost saved from automation</div>
     </div>
 
     <div class="cell price-cell">
-      <div class="label">VS ANNUAL PRICE</div>
-      <div class="big" id="vsAnnualPrice">—</div>
-      <div class="sub"><strong id="tierName">—</strong> · <span id="tierDesc">—</span></div>
+      <div class="label">SUGGESTED PACKAGE</div>
+      <div class="big tier-only" id="tierName">—</div>
+      <div class="sub" id="tierDesc">—</div>
     </div>
 
     <div class="cell ratio-cell">
@@ -864,9 +799,8 @@
 
 <script>
   const $ = (id) => document.getElementById(id);
-  const VS_WIN_RATE_LIFT_REL = 0.05;
   const VS_PRICE_PER_LINE = 0.30;
-  const inputs = ['reps','hoursPerDay','rfqsPerDay','linesPerRfq','avgRfqValue','currentWinRate','repCost','workingDays','industryMargin'];
+  const inputs = ['reps','hoursPerDay','rfqsPerDay','linesPerRfq','repCost','workingDays'];
   inputs.forEach(id => $(id).addEventListener('input', calc));
 
   function fmt(n) {
@@ -883,8 +817,7 @@
     return '€' + n.toFixed(2);
   }
 
-  const COST_OUTPUT_IDS = ['costSaved','costSavedMini','manualPerLineKey','vsPerLineKey','totalRfqs','totalLines','manualCost','vsCost','manualPerLine','vsPerLine','tierName','tierDesc','vsAnnualPrice'];
-  const REVENUE_OUTPUT_IDS = ['revenueUplift','profitFromUplift','profitFromUpliftMini','winsTodayShown','winsWithVsShown','extraWinsShown','winRateShown','industryMarginShown'];
+  const COST_OUTPUT_IDS = ['costSaved','manualPerLineKey','vsPerLineKey','totalRfqs','totalLines','manualCost','vsCost','manualPerLine','vsPerLine','tierName','tierDesc'];
 
   function clearIds(ids) {
     ids.forEach(id => { const el = $(id); if (el) el.textContent = ''; });
@@ -895,34 +828,24 @@
     const hoursPerDay = +$('hoursPerDay').value || 0;
     const rfqsPerDay = +$('rfqsPerDay').value || 0;
     const linesPerRfq = +$('linesPerRfq').value || 0;
-    const avgRfqValue = +$('avgRfqValue').value || 0;
-    const currentWinRate = +$('currentWinRate').value || 0;
 
     const costFilled = reps > 0 && hoursPerDay > 0 && rfqsPerDay > 0 && linesPerRfq > 0;
-    const revenueFilled = costFilled && avgRfqValue > 0 && currentWinRate > 0;
 
     const costCard = document.querySelector('.cost-card');
-    const revenueCard = document.querySelector('.revenue-card');
     const totalBlock = document.querySelector('.total-block');
 
     if (!costFilled) {
       clearIds(COST_OUTPUT_IDS);
-      clearIds(REVENUE_OUTPUT_IDS);
       $('totalValue').textContent = '';
       $('ratio').textContent = '';
-      $('vsWinRate').value = '';
       costCard.classList.add('is-empty');
-      revenueCard.classList.add('is-empty');
       totalBlock.classList.add('is-empty');
       return;
     }
 
-    const vsWinRate = revenueFilled ? +(currentWinRate * (1 + VS_WIN_RATE_LIFT_REL)).toFixed(1) : 0;
-    $('vsWinRate').value = revenueFilled ? vsWinRate : '';
     const repCost = +$('repCost').value || 0;
     const workingDays = +$('workingDays').value || 0;
     const vsPricePerLine = VS_PRICE_PER_LINE;
-    const industryMargin = +$('industryMargin').value || 0;
 
     const totalRfqs = reps * rfqsPerDay * workingDays;
     const linesPerYear = totalRfqs * linesPerRfq;
@@ -953,12 +876,9 @@
     const vsTotal = tierPrice;
     const costSaved = Math.max(0, manualTotal - vsTotal);
 
-    // Cost-side outputs (populate now since costFilled)
     costCard.classList.remove('is-empty');
     totalBlock.classList.remove('is-empty');
     $('costSaved').textContent = fmt(costSaved);
-    $('costSavedMini').textContent = fmt(costSaved);
-    $('vsAnnualPrice').textContent = fmt(vsTotal);
     $('tierName').textContent = tierName;
     $('tierDesc').textContent = tierDesc;
     $('totalRfqs').textContent = fmtNum(totalRfqs);
@@ -970,30 +890,7 @@
     $('manualPerLineKey').textContent = fmtPerLine(manualPerLine);
     $('vsPerLineKey').textContent = fmtPerLine(vsPricePerLine);
 
-    // Revenue-side outputs (only if revenueFilled)
-    let profitFromUplift = 0;
-    if (revenueFilled) {
-      const winsToday = totalRfqs * currentWinRate / 100;
-      const winsWithVs = totalRfqs * vsWinRate / 100;
-      const extraWins = Math.max(0, winsWithVs - winsToday);
-      const revenueUplift = extraWins * avgRfqValue;
-      profitFromUplift = revenueUplift * (industryMargin / 100);
-
-      revenueCard.classList.remove('is-empty');
-      $('revenueUplift').textContent = fmt(revenueUplift);
-      $('profitFromUplift').textContent = fmt(profitFromUplift);
-      $('profitFromUpliftMini').textContent = fmt(profitFromUplift);
-      $('winRateShown').textContent = currentWinRate + '% → ' + vsWinRate + '%';
-      $('extraWinsShown').textContent = fmtNum(Math.round(extraWins));
-      $('winsTodayShown').textContent = fmtNum(Math.round(winsToday));
-      $('winsWithVsShown').textContent = fmtNum(Math.round(winsWithVs));
-      $('industryMarginShown').textContent = industryMargin;
-    } else {
-      revenueCard.classList.add('is-empty');
-      clearIds(REVENUE_OUTPUT_IDS);
-    }
-
-    const totalValue = costSaved + profitFromUplift;
+    const totalValue = costSaved;
     const ratio = vsTotal > 0 ? (totalValue / vsTotal) : 0;
     $('totalValue').textContent = fmt(totalValue);
     $('ratio').textContent = ratio > 0 ? ratio.toFixed(1) + '×' : '—';
