@@ -42,14 +42,46 @@
   .brand-row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
     margin-bottom: 14px;
+  }
+  .brand-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
   .vs-icon {
     width: 26px;
     height: 30px;
     color: var(--vanilla);
     flex-shrink: 0;
+  }
+  .lang-toggle {
+    display: flex;
+    gap: 4px;
+  }
+  .lang-toggle button {
+    background: transparent;
+    border: 1px solid var(--hair);
+    color: var(--vanilla-dim);
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+  }
+  .lang-toggle button:hover {
+    color: var(--vanilla);
+    border-color: rgba(255, 247, 230, 0.25);
+  }
+  .lang-toggle button.active {
+    color: var(--vanilla);
+    background: rgba(61, 122, 255, 0.12);
+    border-color: rgba(61, 122, 255, 0.4);
   }
   .tag {
     font-family: 'IBM Plex Mono', monospace;
@@ -732,12 +764,18 @@
 
   <div class="header">
     <div class="brand-row">
-      <svg class="vs-icon" viewBox="0 0 178.1 200" xmlns="http://www.w3.org/2000/svg" aria-label="Vanilla Steel">
-        <path fill="currentColor" d="M168.3,42.8L98.8,2.6C95.8,0.9,92.4,0,89,0c-3.4,0-6.8,0.9-9.8,2.6L9.7,42.8c-6,3.5-9.7,10-9.7,16.9v80.5c0,6.9,3.7,13.4,9.7,16.9l69.5,40.2c3,1.7,6.4,2.6,9.8,2.6s6.8-0.9,9.8-2.6l69.5-40.2c6-3.5,9.7-10,9.7-16.9V59.7C178.1,52.8,174.4,46.3,168.3,42.8z M84.8,12.1c1.3-0.8,2.8-1.1,4.3-1.1c1.5,0,3,0.4,4.3,1.1l64.3,37.2c3.1,1.8,4.8,3.3,5.2,4.7c0.4,1.6-0.4,4.3-2.4,7.8l0,0l-38.6,66.8c-1.2,2.1-3.3,3.4-5.6,3.4c-2.1,0-3.9-1.2-5-3.2l-53-91.7c-1.7-3.1-2.3-5.4-1.9-6.9c0.4-1.4,2.1-2.9,5.2-4.7L84.8,12.1z M91.4,181.4c-1.1,1.8-3.7,1.8-4.8,0L17.5,62c-2-3.5-2.9-6.2-2.4-7.8c0.4-1.4,2.1-2.9,5.2-4.7l24.3-14.1l57.1,98.8c2.6,4.7,6.9,7.9,12,8.7L91.4,181.4z M11,140.3V72.6l63.1,109.1l-58.8-34.1C12.6,146.1,11,143.3,11,140.3z M162.8,147.6l-59,34.1l63.2-109.6v68.1C167.1,143.3,165.5,146.1,162.8,147.6z"/>
-      </svg>
-      <div class="tag">// VALUE CALCULATOR</div>
+      <div class="brand-left">
+        <svg class="vs-icon" viewBox="0 0 178.1 200" xmlns="http://www.w3.org/2000/svg" aria-label="Vanilla Steel">
+          <path fill="currentColor" d="M168.3,42.8L98.8,2.6C95.8,0.9,92.4,0,89,0c-3.4,0-6.8,0.9-9.8,2.6L9.7,42.8c-6,3.5-9.7,10-9.7,16.9v80.5c0,6.9,3.7,13.4,9.7,16.9l69.5,40.2c3,1.7,6.4,2.6,9.8,2.6s6.8-0.9,9.8-2.6l69.5-40.2c6-3.5,9.7-10,9.7-16.9V59.7C178.1,52.8,174.4,46.3,168.3,42.8z M84.8,12.1c1.3-0.8,2.8-1.1,4.3-1.1c1.5,0,3,0.4,4.3,1.1l64.3,37.2c3.1,1.8,4.8,3.3,5.2,4.7c0.4,1.6-0.4,4.3-2.4,7.8l0,0l-38.6,66.8c-1.2,2.1-3.3,3.4-5.6,3.4c-2.1,0-3.9-1.2-5-3.2l-53-91.7c-1.7-3.1-2.3-5.4-1.9-6.9c0.4-1.4,2.1-2.9,5.2-4.7L84.8,12.1z M91.4,181.4c-1.1,1.8-3.7,1.8-4.8,0L17.5,62c-2-3.5-2.9-6.2-2.4-7.8c0.4-1.4,2.1-2.9,5.2-4.7l24.3-14.1l57.1,98.8c2.6,4.7,6.9,7.9,12,8.7L91.4,181.4z M11,140.3V72.6l63.1,109.1l-58.8-34.1C12.6,146.1,11,143.3,11,140.3z M162.8,147.6l-59,34.1l63.2-109.6v68.1C167.1,143.3,165.5,146.1,162.8,147.6z"/>
+        </svg>
+        <div class="tag" data-i18n="tag">// VALUE CALCULATOR</div>
+      </div>
+      <div class="lang-toggle">
+        <button data-lang="en" class="active">EN</button>
+        <button data-lang="de">DE</button>
+      </div>
     </div>
-    <h1><span class="dim">How much value would the Quoting Tool generate for your team?</span></h1>
+    <h1><span class="dim" data-i18n="h1">How much value would the Quoting Tool generate for your team?</span></h1>
   </div>
 
   <div class="blocks-row">
@@ -746,12 +784,12 @@
   <div class="block">
     <div class="block-head">
       <span class="num">01</span>
-      <span class="title">Cost saved <span class="dim">— time reclaimed from manual quoting</span></span>
+      <span class="title"><span data-i18n="block_title">Cost saved</span> <span class="dim" data-i18n="block_subtitle">— time reclaimed from manual quoting</span></span>
     </div>
 
     <div class="field">
       <div class="info">
-        <label for="reps">Sales reps</label>
+        <label for="reps" data-i18n="label_reps">Sales reps</label>
       </div>
       <div class="input-wrap">
         <input type="number" id="reps" min="1" max="9999" placeholder="—" step="1">
@@ -760,7 +798,7 @@
 
     <div class="field">
       <div class="info">
-        <label for="hoursPerDay">Hours per rep per day on RFQs</label>
+        <label for="hoursPerDay" data-i18n="label_hours">Hours per rep per day on RFQs</label>
       </div>
       <div class="input-wrap">
         <input type="number" id="hoursPerDay" min="0.1" max="24" placeholder="—" step="0.1"><span class="unit-post">h</span>
@@ -769,7 +807,7 @@
 
     <div class="field">
       <div class="info">
-        <label for="rfqsPerDay">RFQs per rep per day</label>
+        <label for="rfqsPerDay" data-i18n="label_rfqs">RFQs per rep per day</label>
       </div>
       <div class="input-wrap">
         <input type="number" id="rfqsPerDay" min="1" max="9999" placeholder="—" step="1">
@@ -778,7 +816,7 @@
 
     <div class="field">
       <div class="info">
-        <label for="linesPerRfq">Line items per RFQ</label>
+        <label for="linesPerRfq" data-i18n="label_lines">Line items per RFQ</label>
       </div>
       <div class="input-wrap">
         <input type="number" id="linesPerRfq" min="1" max="9999" placeholder="—" step="1">
@@ -786,12 +824,12 @@
     </div>
 
     <details class="advanced">
-      <summary>▼ ADVANCED — REP COST, WORKING DAYS</summary>
+      <summary data-i18n="adv_summary">▼ ADVANCED — REP COST, WORKING DAYS</summary>
 
       <div class="field">
         <div class="info">
-          <label for="repCost">Sales rep cost</label>
-          <div class="hint">fully-loaded: base + commission + benefits ÷ working hours</div>
+          <label for="repCost" data-i18n="label_rep_cost">Sales rep cost</label>
+          <div class="hint" data-i18n="hint_rep_cost">fully-loaded: base + commission + benefits ÷ working hours</div>
         </div>
         <div class="input-wrap">
           <span class="unit-pre">€</span><input type="number" id="repCost" min="20" max="500" value="60" step="5"><span class="unit-post">/h</span>
@@ -800,7 +838,7 @@
 
       <div class="field">
         <div class="info">
-          <label for="workingDays">Working days per year</label>
+          <label for="workingDays" data-i18n="label_working_days">Working days per year</label>
         </div>
         <div class="input-wrap">
           <input type="number" id="workingDays" min="180" max="260" value="220" step="1">
@@ -813,11 +851,11 @@
     <div class="output-block cost-card">
       <div class="result-head">
         <div class="result-hero">
-          <div class="label">ANNUAL COST SAVED</div>
+          <div class="label" data-i18n="out_cost_saved">ANNUAL COST SAVED</div>
           <div class="big" id="costSaved">—</div>
         </div>
         <div class="result-tier">
-          <div class="label">SUGGESTED PACKAGE</div>
+          <div class="label" data-i18n="out_package">SUGGESTED PACKAGE</div>
           <div class="tier-name" id="tierName">—</div>
           <div class="tier-desc" id="tierDesc">—</div>
         </div>
@@ -825,15 +863,15 @@
 
       <div class="perline-mini">
         <div>
-          <div class="col-label">YOUR COST / RFQ LINE</div>
+          <div class="col-label" data-i18n="out_your_cost">YOUR COST / RFQ LINE</div>
           <div class="col-val" id="manualPerLineKey">—</div>
         </div>
         <div class="vs-col">
-          <div class="col-label">WITH VS / RFQ LINE</div>
+          <div class="col-label" data-i18n="out_vs_cost">WITH VS / RFQ LINE</div>
           <div class="col-val" id="vsPerLineKey">—</div>
         </div>
         <div class="ratio-col">
-          <div class="col-label">RETURN ON PRICE</div>
+          <div class="col-label" data-i18n="out_return">RETURN ON PRICE</div>
           <div class="col-val" id="ratio">—</div>
         </div>
       </div>
@@ -842,29 +880,29 @@
   </div><!-- /blocks-row -->
 
   <details class="details">
-    <summary>▼ SHOW THE MATH</summary>
+    <summary data-i18n="math_summary">▼ SHOW THE MATH</summary>
     <div class="details-row">
-      <div class="label">Annual RFQs</div>
+      <div class="label" data-i18n="math_rfqs">Annual RFQs</div>
       <div class="value" id="totalRfqs">—</div>
     </div>
     <div class="details-row">
-      <div class="label">Annual RFQ lines</div>
+      <div class="label" data-i18n="math_lines">Annual RFQ lines</div>
       <div class="value" id="totalLines">—</div>
     </div>
     <div class="details-row">
-      <div class="label">Manual cost (today)</div>
+      <div class="label" data-i18n="math_manual_cost">Manual cost (today)</div>
       <div class="value" id="manualCost">—</div>
     </div>
     <div class="details-row">
-      <div class="label">VS price (per year)</div>
+      <div class="label" data-i18n="math_vs_cost">VS price (per year)</div>
       <div class="value" id="vsCost">—</div>
     </div>
     <div class="details-row">
-      <div class="label">Manual / line</div>
+      <div class="label" data-i18n="math_manual_per_line">Manual / line</div>
       <div class="value" id="manualPerLine">—</div>
     </div>
     <div class="details-row">
-      <div class="label">VS / line</div>
+      <div class="label" data-i18n="math_vs_per_line">VS / line</div>
       <div class="value" id="vsPerLine">—</div>
     </div>
   </details>
@@ -875,6 +913,92 @@
   const $ = (id) => document.getElementById(id);
   const VS_PRICE_PER_LINE = 0.30;
   const inputs = ['reps','hoursPerDay','rfqsPerDay','linesPerRfq','repCost','workingDays'];
+
+  /* ───────── i18n ───────── */
+  const I18N = {
+    en: {
+      title: 'Quoting Tool — Value Calculator',
+      tag: '// VALUE CALCULATOR',
+      h1: 'How much value would the Quoting Tool generate for your team?',
+      block_title: 'Cost saved',
+      block_subtitle: '— time reclaimed from manual quoting',
+      label_reps: 'Sales reps',
+      label_hours: 'Hours per rep per day on RFQs',
+      label_rfqs: 'RFQs per rep per day',
+      label_lines: 'Line items per RFQ',
+      adv_summary: '▼ ADVANCED — REP COST, WORKING DAYS',
+      label_rep_cost: 'Sales rep cost',
+      hint_rep_cost: 'fully-loaded: base + commission + benefits ÷ working hours',
+      label_working_days: 'Working days per year',
+      out_cost_saved: 'ANNUAL COST SAVED',
+      out_package: 'SUGGESTED PACKAGE',
+      out_your_cost: 'YOUR COST / RFQ LINE',
+      out_vs_cost: 'WITH VS / RFQ LINE',
+      out_return: 'RETURN ON PRICE',
+      math_summary: '▼ SHOW THE MATH',
+      math_rfqs: 'Annual RFQs',
+      math_lines: 'Annual RFQ lines',
+      math_manual_cost: 'Manual cost (today)',
+      math_vs_cost: 'VS price (per year)',
+      math_manual_per_line: 'Manual / line',
+      math_vs_per_line: 'VS / line',
+      tier_starter_desc: 'up to 50k RFQ lines / year',
+      tier_growth_desc: 'up to 150k RFQ lines / year',
+      tier_enterprise_desc: 'up to 300k RFQ lines / year',
+      tier_enterprise_plus_desc: 'above 300k RFQ lines — custom quote'
+    },
+    de: {
+      title: 'Quoting Tool — Wertrechner',
+      tag: '// WERTRECHNER',
+      h1: 'Wie viel Wert würde der Quoting Tool für Ihr Team generieren?',
+      block_title: 'Kostenersparnis',
+      block_subtitle: '— eingesparte Zeit aus manuellem Quoting',
+      label_reps: 'Vertriebsmitarbeiter',
+      label_hours: 'Stunden pro Mitarbeiter pro Tag für Anfragen',
+      label_rfqs: 'Anfragen pro Mitarbeiter pro Tag',
+      label_lines: 'Positionen pro Anfrage',
+      adv_summary: '▼ EINSTELLUNGEN — STUNDENSATZ, ARBEITSTAGE',
+      label_rep_cost: 'Stundensatz Vertrieb',
+      hint_rep_cost: 'Vollkosten: Grundgehalt + Provision + Nebenkosten ÷ Arbeitsstunden',
+      label_working_days: 'Arbeitstage pro Jahr',
+      out_cost_saved: 'JÄHRLICHE KOSTENERSPARNIS',
+      out_package: 'EMPFOHLENES PAKET',
+      out_your_cost: 'IHRE KOSTEN / POSITION',
+      out_vs_cost: 'MIT VS / POSITION',
+      out_return: 'RENDITE / EURO',
+      math_summary: '▼ BERECHNUNG ANZEIGEN',
+      math_rfqs: 'Anfragen / Jahr',
+      math_lines: 'Positionen / Jahr',
+      math_manual_cost: 'Manuelle Kosten (heute)',
+      math_vs_cost: 'VS-Preis (pro Jahr)',
+      math_manual_per_line: 'Manuell / Position',
+      math_vs_per_line: 'VS / Position',
+      tier_starter_desc: 'bis 50k Positionen / Jahr',
+      tier_growth_desc: 'bis 150k Positionen / Jahr',
+      tier_enterprise_desc: 'bis 300k Positionen / Jahr',
+      tier_enterprise_plus_desc: 'über 300k Positionen — individuelles Angebot'
+    }
+  };
+
+  let lang = localStorage.getItem('vs-lang') || (navigator.language && navigator.language.startsWith('de') ? 'de' : 'en');
+
+  function applyLang(newLang) {
+    lang = (newLang === 'de') ? 'de' : 'en';
+    localStorage.setItem('vs-lang', lang);
+    document.documentElement.lang = lang;
+    document.title = I18N[lang].title;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const k = el.getAttribute('data-i18n');
+      if (I18N[lang][k] !== undefined) el.textContent = I18N[lang][k];
+    });
+    document.querySelectorAll('.lang-toggle button').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    calc();
+  }
+  document.querySelectorAll('.lang-toggle button').forEach(b => {
+    b.addEventListener('click', () => applyLang(b.dataset.lang));
+  });
   inputs.forEach(id => $(id).addEventListener('input', calc));
 
   function fmt(n) {
@@ -926,22 +1050,23 @@
     const manualPerLine = linesPerYear > 0 ? manualTotal / linesPerYear : 0;
 
     let tierName, tierPrice, tierDesc;
+    const t = I18N[lang];
     if (linesPerYear <= 50_000) {
       tierName = 'STARTER';
       tierPrice = 15000;
-      tierDesc = 'up to 50k RFQ lines / year';
+      tierDesc = t.tier_starter_desc;
     } else if (linesPerYear <= 150_000) {
       tierName = 'GROWTH';
       tierPrice = 45000;
-      tierDesc = 'up to 150k RFQ lines / year';
+      tierDesc = t.tier_growth_desc;
     } else if (linesPerYear <= 300_000) {
       tierName = 'ENTERPRISE';
       tierPrice = 90000;
-      tierDesc = 'up to 300k RFQ lines / year';
+      tierDesc = t.tier_enterprise_desc;
     } else {
       tierName = 'ENTERPRISE+';
       tierPrice = 90000;
-      tierDesc = 'above 300k RFQ lines — custom quote';
+      tierDesc = t.tier_enterprise_plus_desc;
     }
 
     const vsTotal = tierPrice;
@@ -964,7 +1089,7 @@
     $('ratio').textContent = ratio > 0 ? ratio.toFixed(1) + '×' : '—';
   }
 
-  calc();
+  applyLang(lang);
 </script>
 </body>
 </html>
