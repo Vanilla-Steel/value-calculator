@@ -35,7 +35,25 @@
     background-size: 48px 48px;
     background-position: -1px -1px;
   }
-  .container { max-width: 1080px; margin: 0 auto; }
+  .container { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* Slowly-rotating brand graphic behind the page */
+  .bg-graphic {
+    position: fixed;
+    top: -18vh;
+    right: -18vw;
+    width: 95vh;
+    height: 95vh;
+    opacity: 0.07;
+    pointer-events: none;
+    animation: bg-spin 140s linear infinite;
+    z-index: 0;
+  }
+  .bg-graphic svg { width: 100%; height: 100%; display: block; }
+  @keyframes bg-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .bg-graphic { animation: none; }
+  }
 
   /* Header */
   .header { margin-bottom: 22px; }
@@ -56,6 +74,20 @@
     height: 30px;
     color: var(--vanilla);
     flex-shrink: 0;
+  }
+  .brand-wordmark {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--vanilla);
+    letter-spacing: -0.2px;
+    line-height: 1;
+  }
+  .brand-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--hair);
+    margin: 0 4px;
   }
   .lang-toggle {
     display: flex;
@@ -601,6 +633,14 @@
     border-bottom: 1px solid var(--hair);
     margin-bottom: 18px;
   }
+  .output-block .hero-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--vanilla-dim);
+    line-height: 1.5;
+    margin-top: 8px;
+    letter-spacing: 0.2px;
+  }
   .output-block .result-tier { text-align: right; }
   .output-block .result-tier .label {
     margin-bottom: 8px;
@@ -760,6 +800,22 @@
 </style>
 </head>
 <body>
+
+<!-- Slowly-rotating brand graphic -->
+<div class="bg-graphic" aria-hidden="true">
+  <svg viewBox="0 0 800 800" fill="none" stroke="#3D7AFF" stroke-width="0.8">
+    <circle cx="400" cy="400" r="140"/>
+    <circle cx="400" cy="400" r="220"/>
+    <circle cx="400" cy="400" r="300"/>
+    <circle cx="400" cy="400" r="380"/>
+    <line x1="400" y1="20" x2="400" y2="780"/>
+    <line x1="20" y1="400" x2="780" y2="400"/>
+    <line x1="117" y1="117" x2="683" y2="683"/>
+    <line x1="683" y1="117" x2="117" y2="683"/>
+    <path d="M400 100 L460 134 L460 200 L400 234 L340 200 L340 134 Z"/>
+  </svg>
+</div>
+
 <div class="container">
 
   <div class="header">
@@ -768,6 +824,8 @@
         <svg class="vs-icon" viewBox="0 0 178.1 200" xmlns="http://www.w3.org/2000/svg" aria-label="Vanilla Steel">
           <path fill="currentColor" d="M168.3,42.8L98.8,2.6C95.8,0.9,92.4,0,89,0c-3.4,0-6.8,0.9-9.8,2.6L9.7,42.8c-6,3.5-9.7,10-9.7,16.9v80.5c0,6.9,3.7,13.4,9.7,16.9l69.5,40.2c3,1.7,6.4,2.6,9.8,2.6s6.8-0.9,9.8-2.6l69.5-40.2c6-3.5,9.7-10,9.7-16.9V59.7C178.1,52.8,174.4,46.3,168.3,42.8z M84.8,12.1c1.3-0.8,2.8-1.1,4.3-1.1c1.5,0,3,0.4,4.3,1.1l64.3,37.2c3.1,1.8,4.8,3.3,5.2,4.7c0.4,1.6-0.4,4.3-2.4,7.8l0,0l-38.6,66.8c-1.2,2.1-3.3,3.4-5.6,3.4c-2.1,0-3.9-1.2-5-3.2l-53-91.7c-1.7-3.1-2.3-5.4-1.9-6.9c0.4-1.4,2.1-2.9,5.2-4.7L84.8,12.1z M91.4,181.4c-1.1,1.8-3.7,1.8-4.8,0L17.5,62c-2-3.5-2.9-6.2-2.4-7.8c0.4-1.4,2.1-2.9,5.2-4.7l24.3-14.1l57.1,98.8c2.6,4.7,6.9,7.9,12,8.7L91.4,181.4z M11,140.3V72.6l63.1,109.1l-58.8-34.1C12.6,146.1,11,143.3,11,140.3z M162.8,147.6l-59,34.1l63.2-109.6v68.1C167.1,143.3,165.5,146.1,162.8,147.6z"/>
         </svg>
+        <span class="brand-wordmark">Quoting Tool</span>
+        <span class="brand-divider"></span>
         <div class="tag" data-i18n="tag">// VALUE CALCULATOR</div>
       </div>
       <div class="lang-toggle">
@@ -783,8 +841,7 @@
   <!-- BLOCK 1: COST SAVED — head + inputs -->
   <div class="block">
     <div class="block-head">
-      <span class="num">01</span>
-      <span class="title"><span data-i18n="block_title">Cost saved</span> <span class="dim" data-i18n="block_subtitle">— time reclaimed from manual quoting</span></span>
+      <span class="title" data-i18n="block_title">Inputs</span>
     </div>
 
     <div class="field">
@@ -853,6 +910,7 @@
         <div class="result-hero">
           <div class="label" data-i18n="out_cost_saved">ANNUAL COST SAVED</div>
           <div class="big" id="costSaved">—</div>
+          <div class="hero-sub" data-i18n="out_cost_saved_sub">time reclaimed from manual quoting</div>
         </div>
         <div class="result-tier">
           <div class="label" data-i18n="out_package">SUGGESTED PACKAGE</div>
@@ -920,9 +978,9 @@
       title: 'Quoting Tool — Value Calculator',
       tag: '// VALUE CALCULATOR',
       h1: 'How much value would the Quoting Tool generate for your team?',
-      block_title: 'Cost saved',
-      block_subtitle: '— time reclaimed from manual quoting',
-      label_reps: 'Sales reps',
+      block_title: 'Inputs',
+      out_cost_saved_sub: 'time reclaimed from manual quoting',
+      label_reps: 'Number of sales reps',
       label_hours: 'Hours per rep per day on RFQs',
       label_rfqs: 'RFQs per rep per day',
       label_lines: 'Line items per RFQ',
@@ -950,10 +1008,10 @@
     de: {
       title: 'Quoting Tool — Wertrechner',
       tag: '// WERTRECHNER',
-      h1: 'Wie viel Wert würde der Quoting Tool für Ihr Team generieren?',
-      block_title: 'Kostenersparnis',
-      block_subtitle: '— eingesparte Zeit aus manuellem Quoting',
-      label_reps: 'Vertriebsmitarbeiter',
+      h1: 'Wieviel Wert würde das Quoting Tool für Ihr Team generieren?',
+      block_title: 'Eingaben',
+      out_cost_saved_sub: 'eingesparte Zeit aus manuellem Quoting',
+      label_reps: 'Anzahl Vertriebsmitarbeiter',
       label_hours: 'Stunden pro Mitarbeiter pro Tag für Anfragen',
       label_rfqs: 'Anfragen pro Mitarbeiter pro Tag',
       label_lines: 'Positionen pro Anfrage',
