@@ -544,13 +544,50 @@
     line-height: 1.55;
     margin-top: 10px;
   }
+  /* Result header: cost saved (hero) + suggested package (right) */
+  .output-block .result-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: end;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--hair);
+    margin-bottom: 18px;
+  }
+  .output-block .result-tier { text-align: right; }
+  .output-block .result-tier .label {
+    margin-bottom: 8px;
+  }
+  .output-block .result-tier .tier-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(22px, 2.6vw, 28px);
+    color: var(--vanilla);
+    letter-spacing: 0.4px;
+    line-height: 1;
+  }
+  .output-block .result-tier .tier-desc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--vanilla-dim);
+    letter-spacing: 0.2px;
+    margin-top: 6px;
+  }
+
   .output-block .perline-mini {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 18px;
-    margin-top: 22px;
-    padding-top: 16px;
-    border-top: 1px solid var(--hair);
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+  .output-block .perline-mini .ratio-col .col-val {
+    color: var(--red);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 26px;
+    letter-spacing: -0.4px;
   }
   .output-block .perline-mini .col-label {
     font-family: 'IBM Plex Mono', monospace;
@@ -757,43 +794,32 @@
     </details>
   </div>
 
-    <!-- RIGHT COLUMN: output + total stacked -->
-    <div class="results-col">
-      <div class="output-block cost-card">
-        <div class="label">ANNUAL COST SAVED</div>
-        <div class="big" id="costSaved">—</div>
-        <div class="sub">manual quoting cost minus VS package price</div>
-
-        <div class="perline-mini">
-          <div>
-            <div class="col-label">YOUR COST / RFQ LINE TODAY</div>
-            <div class="col-val" id="manualPerLineKey">—</div>
-          </div>
-          <div class="vs-col">
-            <div class="col-label">WITH VS / RFQ LINE</div>
-            <div class="col-val" id="vsPerLineKey">—</div>
-          </div>
+    <!-- RIGHT COLUMN: single consolidated result panel -->
+    <div class="output-block cost-card">
+      <div class="result-head">
+        <div class="result-hero">
+          <div class="label">ANNUAL COST SAVED</div>
+          <div class="big" id="costSaved">—</div>
+        </div>
+        <div class="result-tier">
+          <div class="label">SUGGESTED PACKAGE</div>
+          <div class="tier-name" id="tierName">—</div>
+          <div class="tier-desc" id="tierDesc">—</div>
         </div>
       </div>
 
-      <!-- TOTAL + TIER + RATIO -->
-      <div class="total-block">
-        <div class="cell value-cell">
-          <div class="label">TOTAL ANNUAL VALUE</div>
-          <div class="big" id="totalValue">—</div>
-          <div class="sub">cost saved from automation</div>
+      <div class="perline-mini">
+        <div>
+          <div class="col-label">YOUR COST / RFQ LINE</div>
+          <div class="col-val" id="manualPerLineKey">—</div>
         </div>
-
-        <div class="cell price-cell">
-          <div class="label">SUGGESTED PACKAGE</div>
-          <div class="big tier-only" id="tierName">—</div>
-          <div class="sub" id="tierDesc">—</div>
+        <div class="vs-col">
+          <div class="col-label">WITH VS / RFQ LINE</div>
+          <div class="col-val" id="vsPerLineKey">—</div>
         </div>
-
-        <div class="cell ratio-cell">
-          <div class="label">RETURN ON PRICE</div>
-          <div class="big" id="ratio">—</div>
-          <div class="sub">€ of value per € paid</div>
+        <div class="ratio-col">
+          <div class="col-label">RETURN ON PRICE</div>
+          <div class="col-val" id="ratio">—</div>
         </div>
       </div>
     </div>
@@ -865,14 +891,11 @@
     const costFilled = reps > 0 && hoursPerDay > 0 && rfqsPerDay > 0 && linesPerRfq > 0;
 
     const costCard = document.querySelector('.cost-card');
-    const totalBlock = document.querySelector('.total-block');
 
     if (!costFilled) {
       clearIds(COST_OUTPUT_IDS);
-      $('totalValue').textContent = '';
       $('ratio').textContent = '';
       costCard.classList.add('is-empty');
-      totalBlock.classList.add('is-empty');
       return;
     }
 
@@ -910,7 +933,6 @@
     const costSaved = Math.max(0, manualTotal - vsTotal);
 
     costCard.classList.remove('is-empty');
-    totalBlock.classList.remove('is-empty');
     $('costSaved').textContent = fmt(costSaved);
     $('tierName').textContent = tierName;
     $('tierDesc').textContent = tierDesc;
@@ -923,9 +945,7 @@
     $('manualPerLineKey').textContent = fmtPerLine(manualPerLine);
     $('vsPerLineKey').textContent = fmtPerLine(vsPricePerLine);
 
-    const totalValue = costSaved;
-    const ratio = vsTotal > 0 ? (totalValue / vsTotal) : 0;
-    $('totalValue').textContent = fmt(totalValue);
+    const ratio = vsPricePerLine > 0 ? (manualPerLine / vsPricePerLine) : 0;
     $('ratio').textContent = ratio > 0 ? ratio.toFixed(1) + '×' : '—';
   }
 
