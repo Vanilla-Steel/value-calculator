@@ -38,27 +38,6 @@
   }
   .container { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
 
-  /* Radar background graphic */
-  .bg-graphic {
-    position: fixed;
-    top: 50%;
-    right: -22vw;
-    transform: translateY(-50%);
-    width: 95vh;
-    height: 95vh;
-    opacity: 0.18;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .bg-graphic svg { width: 100%; height: 100%; display: block; }
-  .bg-graphic .radar-arm {
-    transform-origin: 400px 400px;
-    animation: radar-sweep 7s linear infinite;
-  }
-  @keyframes radar-sweep { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) {
-    .bg-graphic .radar-arm { animation: none; }
-  }
 
   /* Header */
   .header { margin-bottom: 22px; }
@@ -805,31 +784,6 @@
 </style>
 </head>
 <body>
-
-<!-- Radar background -->
-<div class="bg-graphic" aria-hidden="true">
-  <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
-    <!-- Static grid -->
-    <g fill="none" stroke="#3D7AFF" stroke-width="0.8">
-      <circle cx="400" cy="400" r="100"/>
-      <circle cx="400" cy="400" r="180"/>
-      <circle cx="400" cy="400" r="260"/>
-      <circle cx="400" cy="400" r="340"/>
-      <circle cx="400" cy="400" r="395"/>
-      <line x1="400" y1="5" x2="400" y2="795"/>
-      <line x1="5" y1="400" x2="795" y2="400"/>
-      <line x1="117" y1="117" x2="683" y2="683"/>
-      <line x1="683" y1="117" x2="117" y2="683"/>
-    </g>
-    <!-- Center dot -->
-    <circle cx="400" cy="400" r="4" fill="#3D7AFF"/>
-    <!-- Sweeping arm -->
-    <g class="radar-arm">
-      <path d="M400 400 L400 5 A 395 395 0 0 0 144 99 Z" fill="#3D7AFF" opacity="0.18"/>
-      <line x1="400" y1="400" x2="400" y2="5" stroke="#3D7AFF" stroke-width="2.2" opacity="0.85"/>
-    </g>
-  </svg>
-</div>
 
 <div class="container">
 
